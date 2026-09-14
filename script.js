@@ -154,7 +154,7 @@ function formatMediaLinksStyled(rawLinks) {
   return result;
 }
 
-function showSocietyDetail(id, isNavigatingHistory = false) {
+function showSocietyDetail(id) {
   const item = globalData.find(d => d._id === id);
   if (!item) return;
 
@@ -306,17 +306,7 @@ function showSocietyDetail(id, isNavigatingHistory = false) {
       </div>
     `;
   }
-
-  if (!isNavigatingHistory) {
-    history.pushState({ id: id }, '', `#society-${id}`);
-  }
 }
-
-window.addEventListener('popstate', (e) => {
-  if (e.state && e.state.id !== undefined) {
-    showSocietyDetail(e.state.id, true);
-  }
-});
 
 fetch('data.json')
   .then(res => {
@@ -332,7 +322,7 @@ fetch('data.json')
     const hash = window.location.hash;
     if (hash && hash.startsWith('#society-')) {
       const id = parseInt(hash.replace('#society-', ''), 10);
-      if (!isNaN(id)) showSocietyDetail(id, true);
+      if (!isNaN(id)) showSocietyDetail(id);
     }
   })
   .catch(err => {
