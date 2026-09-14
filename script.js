@@ -1,9 +1,3 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-const SUPABASE_URL = 'https://vyfyhxirpmptnoipzsvm.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5ZnloeGlycG1wdG5vaXB6c3ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5OTUxNzQsImV4cCI6MjEwMzU3MTE3NH0.GmR_cUgMP9TzpMotCh-DmPseUgyCSNoVaNsEhN5OEMo';
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 const DEFAULT_COLOR = '#2563eb';
 let globalData = [];
 let selectedRowIndex = null;
@@ -17,6 +11,7 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
 function renderDetailValue(rawValue) {
   const val = (rawValue || '').toString().trim();
   if (!val || val.toUpperCase() === 'N/A') {
@@ -159,47 +154,6 @@ function formatMediaLinksStyled(rawLinks) {
   return result;
 }
 
-async function renderSocietyMediaCubes(societyName, containerElementId) {
-  const container = document.getElementById(containerElementId);
-  if (!container) return;
-
-  container.innerHTML = '<p class="loading-state">Loading publications...</p>';
-
-  try {
-    const { data: pdfFiles, error } = await supabase
-      .from('pdf_files')
-      .select('*')
-      .eq('society_tag', societyName);
-
-    if (error || !pdfFiles || pdfFiles.length === 0) {
-      container.innerHTML = '<p class="empty-state">No publications available for this society.</p>';
-      return;
-    }
-
-    container.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
-        ${pdfFiles.map(file => {
-          const isImage = /\.(jpg|jpeg|png|webp|gif)$/i.test(file.name);
-          const badgeText = isImage ? 'IMG' : 'PDF';
-          const mediaCubeLink = `https://mediacube.nlcscosmos.com/?file=${file.id}`;
-
-          return `
-            <div class="pub-card" style="border: 1px solid var(--theme-border, #e2e8f0); background: var(--theme-pastel-bg, var(--bg-surface));">
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-family: var(--font-mono); font-size: 0.65rem; background: var(--border-color); color: var(--text-muted); padding: 2px 4px; border-radius: 3px; font-weight: 600;">${badgeText}</span>
-                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(file.name)}</span>
-              </div>
-              <a href="${mediaCubeLink}" target="_blank" rel="noopener" class="theme-link" style="font-size: 0.75rem; font-weight: 600; text-decoration: none;">View Publication &rarr;</a>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `;
-  } catch (err) {
-    container.innerHTML = '<p class="empty-state">Failed to fetch publications.</p>';
-  }
-}
-
 function showSocietyDetail(id, isNavigatingHistory = false) {
   const item = globalData.find(d => d._id === id);
   if (!item) return;
@@ -225,6 +179,7 @@ function showSocietyDetail(id, isNavigatingHistory = false) {
   document.documentElement.style.setProperty('--theme-accent', theme.accent);
   document.documentElement.style.setProperty('--theme-pastel-bg', theme.pastelBg);
   document.documentElement.style.setProperty('--theme-border', theme.pastelBorder);
+  
   const currentRow = document.getElementById(`row-${id}`);
   if (currentRow) {
     currentRow.classList.add('selected');
@@ -254,14 +209,11 @@ function showSocietyDetail(id, isNavigatingHistory = false) {
   const titleEl = document.getElementById('panel-title');
   if (titleEl) {
     const societyNameText = item['society-name'] || 'Society Details';
-    titleEl.innerHTML = `
-      ${escapeHtml(societyNameText)}
-    `;
+    titleEl.innerHTML = `${escapeHtml(societyNameText)}`;
   }
 
   const societyName = item['society-name'] || '';
   const logoPath = `images/logos/${encodeURIComponent(societyName)}.png`;
-
 
   const contentEl = document.getElementById('panel-content');
   if (contentEl) {
@@ -350,17 +302,10 @@ function showSocietyDetail(id, isNavigatingHistory = false) {
             <div class="info-section-title">Media & External Links</div>
             <div class="info-section-body">${formatMediaLinksStyled(item['media-links'])}</div>
           </div>
-
-          <div class="info-section">
-            <div class="info-section-title">Media Cube Publications</div>
-            <div id="society-media-cubes-container"></div>
-          </div>
         </aside>
       </div>
     `;
   }
-
-  renderSocietyMediaCubes(item['society-name'], 'society-media-cubes-container');
 
   if (!isNavigatingHistory) {
     history.pushState({ id: id }, '', `#society-${id}`);
