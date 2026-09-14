@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COSMOS Cloud — Societies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JZT7E4P7HL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JZT7E4P7HL');
+  </script>
+</head>
+<body>
+  <div class="app-viewport">
+    
+    <aside class="sidebar-pane">
+      <div class="brand-block">
+        <img src="images/photos/NLCS_logo_blue.png" alt="NLCS Jeju Logo" class="brand-logo-img" />
+        <div class="brand-text">
+          <span class="brand-sub">NLCS COSMOS CLOUD</span>
+          <span class="brand-name">Societies</span>
+        </div>
+      </div>
+
+      <div class="search-container">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input 
+          type="text" 
+          id="search-input" 
+          class="sidebar-search" 
+          placeholder="Filter societies..." 
+          oninput="handleSearch(this.value)"
+        />
+      </div>
+      <div class="directory-list-container" id="societies-container">
+        <div class="loading-state">Loading societies...</div>
+      </div>
+    </aside>
+
+    <main class="main-content-pane" id="main-pane">
+      <div class="empty-selection-state" id="empty-state">
+        <h2>Select a Society</h2>
+        <p>Choose an enterprise or society from the menu on the left to view its details, team, and publications.</p>
+      </div>
+      <div class="society-detail-view" id="detail-view" style="display: none;">
+        <header class="detail-header">
+          <div>
+            <span class="panel-badge" id="panel-assoc-badge">Association</span>
+            <h1 class="society-title" id="panel-title">Society Title</h1>
+          </div>
+        </header>
+        <div class="detail-body" id="panel-content"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="signup-bottom-bar" id="signup-bottom-bar" style="display:none;"></div>
+  <div class="site-footer-credit">
+    Powered by
+    <img src="images/logos/COSMOS%20(Software%20Engineering%20Society).png" alt="COSMOS logo" class="footer-cosmos-logo" />
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
